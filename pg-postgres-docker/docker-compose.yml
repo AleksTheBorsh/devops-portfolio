@@ -1,0 +1,28 @@
+services:
+  # Наша база данных
+  postgres:
+    image: postgres:14
+    container_name: dev-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_DB: devdb
+    volumes:
+      - pg-data-dev:/var/lib/postgresql/data
+
+  # Красивая веб-панель для управления базой
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: dev-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: supersecret
+    ports:
+      - "8088:80" # Будем заходить через браузер по порту 8088
+    depends_on:
+      - postgres
+
+volumes:
+  pg-data-dev:
