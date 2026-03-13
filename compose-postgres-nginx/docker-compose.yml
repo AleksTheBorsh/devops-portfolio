@@ -1,0 +1,37 @@
+services:
+  # Сервис 1: База данных (закрыта от мира)
+  postgres_db:
+    image: postgres:14
+    container_name: compose-pg
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_DB: testdb
+    volumes:
+      - pg-data-compose:/var/lib/postgresql/data
+    # ОБРАТИ ВНИМАНИЕ: Тут нет блока 'ports'! 
+    # Мы не открываем базу наружу, она доступна только внутри своей сети.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d testdb"]
+      interval: 5s
+      retries: 5
+
+  # Сервис 2: Nginx (наша "дверь" в мир)
+  nginx_proxy:
+    image: nginx:latest
+    container_name: compose-nginx
+    restart: always
+    ports:
+      # Открываем порт 5435 на сервере и шлем его в 5432 Nginx'а
+      - "5435:5432"
+    volumes:
+      # Прокидываем наш конфиг (Bind Mount)
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+
+# Объявляем наш именованный том для сохранения данных БД
+volumes:
+  pg-data-compose:
