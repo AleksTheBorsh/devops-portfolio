@@ -1,0 +1,3 @@
+---
+  postgres_version: "14"
+# defaults file for install_postgres

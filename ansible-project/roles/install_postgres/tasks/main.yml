@@ -1,0 +1,14 @@
+---
+- name: Установка пакетов PostgreSQL
+  ansible.builtin.apt:
+    name: 
+      - "postgresql"
+      - "postgresql-contrib"
+    state: present
+    update_cache: yes
+
+- name: Проверка, что сервис запущен и добавлен в автозагрузку
+  ansible.builtin.systemd:
+    name: postgresql
+    state: started
+    enabled: yes
