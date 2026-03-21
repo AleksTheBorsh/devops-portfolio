@@ -1,0 +1,27 @@
+name: Test My Ubuntu Runner
+
+# Триггер: пайплайн запустится автоматически при пуше в ветку main
+on:
+  push:
+    branches:
+      - main
+      - master # На случай, если у тебя ветка называется master
+
+jobs:
+  say-hello:
+    # САМАЯ ВАЖНАЯ СТРОЧКА! Говорит Гитхабу использовать ТВОЙ сервер, а не облачный.
+    runs-on: self-hosted
+
+    steps:
+      # Шаг 1: Скачиваем твой код на сервер (стандартный экшен Гитхаба)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Шаг 2: Выполняем обычные bash-команды на твоем Ubuntu
+      - name: Run test commands
+        run: |
+          echo "🎉 Ура! Этот текст выводится прямо с моего Ubuntu сервера!"
+          echo "🤖 Имя сервера:"
+          hostname
+          echo "🕒 Время аптайма:"
+          uptime
