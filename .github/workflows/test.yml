@@ -1,0 +1,13 @@
+name: Server Check
+on: [push]
+
+jobs:
+  test-my-server:
+    runs-on: self-hosted
+    steps:
+      - name: Say Hello
+        run: echo "🎉 Магия CI/CD работает! Привет с моего Ubuntu сервера!"
+      - name: System Info
+        run: |
+          echo "Операционная система:"
+          cat /etc/os-release | grep PRETTY_NAME
