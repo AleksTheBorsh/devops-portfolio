@@ -1,12 +1,30 @@
-name: Build and Push Docker Image
+name: Full-Cycle CI/CD Pipeline
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  # Наша первая джоба (CI) - она осталась без изменений
+  # ==========================================
+  # ЭТАП 1: ТЕСТИРОВАНИЕ КОДА (Новый шаг)
+  # ==========================================
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Проверка синтаксиса Python
+        # Запускаем одноразовый контейнер с Питоном. 
+        # Он просто читает наш файл app.py и ищет в нем грубые ошибки.
+        run: |
+          docker run --rm -v ${{ github.workspace }}/flask-app:/app python:3.9-slim python -m py_compile /app/app.py
+
+  # ==========================================
+  # ЭТАП 2: СБОРКА И ОТПРАВКА В DOCKER HUB
+  # ==========================================
   build:
+    needs: test  # ВАЖНО: Не начинай сборку, пока не пройдена джоба 'test'
     runs-on: self-hosted
     steps:
       - name: Checkout code
@@ -21,26 +39,21 @@ jobs:
       - name: Push to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/portfolio-app:latest
 
-  # Наша НОВАЯ джоба (CD) - Развертывание
+  # ==========================================
+  # ЭТАП 3: РАЗВЕРТЫВАНИЕ НА VDS-2
+  # ==========================================
   deploy:
-    # Говорим: "Не начинай деплой, пока не выполнится сборка (build)"
-    needs: build
+    needs: build  # ВАЖНО: Не начинай деплой, пока не пройдена джоба 'build'
     runs-on: self-hosted
-    
     steps:
-      # Используем готовый плагин для подключения по SSH
       - name: Deploy to VDS-2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          # Команды, которые выполнятся на твоем ВТОРОМ сервере:
           script: |
-            # 1. Скачиваем свежий образ
             docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio-app:latest
-            # 2. Останавливаем и удаляем старый контейнер (если он есть)
             docker stop my-app || true
             docker rm my-app || true
-            # 3. Запускаем новый контейнер на 80 порту
             docker run -d -p 80:80 --name my-app ${{ secrets.DOCKER_USERNAME }}/portfolio-app:latest
