@@ -3,8 +3,8 @@ services:
     image: ghcr.io/mhsanaei/3x-ui:latest
     container_name: 3x-ui
     volumes:
-      - ./db/:/etc/x-ui/
-      - ./cert/:/root/cert/
+      - /opt/vpn-data/db/:/etc/x-ui/
+      - /opt/vpn-data/cert/:/root/cert/
     environment:
       XRAY_VMESS_AEAD_FORCED: "false"
     network_mode: "host"
