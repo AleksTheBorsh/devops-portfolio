@@ -15,10 +15,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Проверка синтаксиса Python
-        # Запускаем одноразовый контейнер с Питоном. 
-        # Он просто читает наш файл app.py и ищет в нем грубые ошибки.
+        # Добавили флаг -u для проброса прав пользователя
         run: |
-          docker run --rm -v ${{ github.workspace }}/flask-app:/app python:3.9-slim python -m py_compile /app/app.py
+          docker run --rm -u $(id -u):$(id -g) -v ${{ github.workspace }}/flask-app:/app python:3.9-slim python -m py_compile /app/app.py
 
   # ==========================================
   # ЭТАП 2: СБОРКА И ОТПРАВКА В DOCKER HUB
