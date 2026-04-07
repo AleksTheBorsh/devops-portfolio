@@ -58,3 +58,19 @@
         name: docker
         state: started
         enabled: yes
+
+    - name: 8. Настраиваем зеркала Docker Hub (обход блокировок)
+      copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "registry-mirrors": [
+              "https://dockerhub.timeweb.cloud",
+              "https://huecker.io"
+            ]
+          }
+
+    - name: 9. Перезапускаем Docker для применения зеркал
+      service:
+        name: docker
+        state: restarted
