@@ -1,0 +1,25 @@
+---
+- name: Деплой Flask-приложения и PostgreSQL
+  hosts: prod_server
+  become: yes
+
+  tasks:
+    - name: 1. Создаем папку для проекта на сервере
+      file:
+        path: /opt/portfolio
+        state: directory
+
+    - name: 2. Копируем файл docker-compose.yml
+      copy:
+        src: ../docker-compose.yml
+        dest: /opt/portfolio/docker-compose.yml
+
+    - name: 3. Копируем папку с кодом приложения (app)
+      copy:
+        src: ../app
+        dest: /opt/portfolio/
+
+    - name: 4. Запускаем проект через Docker Compose
+      command: docker compose up -d --build
+      args:
+        chdir: /opt/portfolio
