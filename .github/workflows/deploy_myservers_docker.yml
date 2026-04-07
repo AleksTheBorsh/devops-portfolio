@@ -19,4 +19,4 @@ jobs:
       - name: Запуск Ansible Playbook
         run: |
           cd ansible-project
-          ansible-playbook -i hosts.ini install-docker.yml
+          ansible-playbook -i hosts.ini install-docker.yml --private-key /root/.ssh/id_ed25519
