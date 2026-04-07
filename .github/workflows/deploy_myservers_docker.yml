@@ -1,0 +1,22 @@
+name: Ansible Infra Deployment
+
+# Пайплайн будет запускаться автоматически при каждом push в ветку main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  run-ansible:
+    # Указываем Гитхабу, что задачу нужно отдать нашему VDS-1, а не облачным серверам
+    runs-on: self-hosted
+
+    steps:
+      # 1. Скачиваем свежий код из репозитория на VDS-1
+      - name: Загрузка актуального кода (Checkout)
+        uses: actions/checkout@v4
+
+      # 2. Выполняем твой плейбук
+      - name: Запуск Ansible Playbook
+        run: |
+          cd ansible-project
+          ansible-playbook -i hosts.ini install-docker.yml
