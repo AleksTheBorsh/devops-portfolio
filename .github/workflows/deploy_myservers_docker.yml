@@ -27,3 +27,9 @@ jobs:
         run: |
           cd ansible-project
           ansible-playbook -i hosts.ini install-docker.yml --private-key ~/.ssh/deploy_key
+      - name: Запуск Ansible Playbook (Деплой Приложения)
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False 
+        run: |
+          cd ansible-project
+          ansible-playbook -i hosts.ini deploy-app.yml --private-key ~/.ssh/deploy_key
