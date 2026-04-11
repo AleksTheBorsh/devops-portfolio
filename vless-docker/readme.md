@@ -25,3 +25,41 @@ docker compose up -d
   Секция Client (Настройки пользователя):
   Email: Любое понятное имя (например, MyPhone)
   Flow: xtls-rprx-vision
+
+
+Такие сервисы как Gemini, ChatGPT и Claude часто блокируют IP-адреса дата-центров (VDS/VPS). Чтобы получить к ним доступ через ваш VPN, необходимо точечно направить этот трафик через сеть Cloudflare WARP.
+Настройка Xray (в веб-панели)
+Перейдите в веб-интерфейс 3X-UI: Настройки X-ray-> Расширенный шаблон
+
+1. Добавление канала WARP (outbounds)
+Найдите массив outbounds и добавьте в него новый узел для маршрутизации трафика на локальный SOCKS5:
+
+JSON
+{
+  "tag": "warp",
+  "protocol": "socks",
+  "settings": {
+    "servers": [
+      {
+        "address": "127.0.0.1",
+        "port": 1080
+      }
+    ]
+  }
+}
+(Важно: Убедитесь, что правило с тегом direct остается самым первым в списке outbounds, чтобы обычный трафик шел напрямую).
+
+2. Настройка маршрутов (routing)
+Найдите массив rules внутри блока routing и добавьте правило, которое будет отлавливать запросы к ИИ-сервисам и отправлять их в канал warp:
+
+JSON
+{
+  "type": "field",
+  "outboundTag": "warp",
+  "domain": [
+    "domain:gemini.google.com",
+    "domain:generativelanguage.googleapis.com",
+    "geosite:openai",
+    "geosite:anthropic"
+  ]
+}
