@@ -59,6 +59,10 @@ JSON
   "domain": [
     "domain:gemini.google.com",
     "domain:generativelanguage.googleapis.com",
+    "domain:googleapis.com", 
+    "domain:gstatic.com",
+    "domain:firebaseio.com",
+    "domain:app-measurement.com",
     "geosite:openai",
     "geosite:anthropic"
   ]
