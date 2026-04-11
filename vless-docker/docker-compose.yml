@@ -9,3 +9,12 @@ services:
       XRAY_VMESS_AEAD_FORCED: "false"
     network_mode: "host"
     restart: always
+
+  warp:
+    image: ghcr.io/kingcc/warproxy:latest
+    container_name: warp
+    restart: always
+    ports:
+      # Прокидываем порт SOCKS5 строго на локалхост сервера,
+      # чтобы снаружи никто не мог к нему подключиться, кроме твоего Xray
+      - "127.0.0.1:1080:1080"
