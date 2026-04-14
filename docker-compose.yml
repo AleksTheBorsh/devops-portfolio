@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: devops_password
       POSTGRES_DB: portfolio_db
     volumes:
-      - /mnt/db_data:/var/lib/postgresql/data
+      - /mnt/db_data/pg_data:/var/lib/postgresql/data
     # НОВОЕ: Учим Докер проверять, готова ли база принимать запросы
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U devops_user -d portfolio_db"]
