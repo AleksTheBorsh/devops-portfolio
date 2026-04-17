@@ -23,6 +23,10 @@
           - gnupg
         state: present
         update_cache: yes
+      register: apt_status
+      until: apt_status is succeeded
+      retries: 5
+      delay: 15
 
     - name: 3. Создаем директорию для ключей (если ее нет)
       file:
