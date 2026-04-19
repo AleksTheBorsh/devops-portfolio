@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'terraform-project/**' # Пайплайн запустится, только если мы меняли файлы в этой папке
+     - 'terraform-project/**' 
+     - '.github/workflows/**'
 
 jobs:
   terraform:
