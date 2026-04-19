@@ -3,6 +3,10 @@ name: Ansible Infra Deployment
 on:
   push:
     branches: [ "main" ]
+  paths:
+     - 'ansible-project/**' 
+     - '.github/workflows/deploy_myservers_docker.yml'
+     - 'docker-compose.yml'
 
 jobs:
   run-ansible:
