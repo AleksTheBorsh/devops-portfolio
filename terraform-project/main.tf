@@ -9,6 +9,19 @@ terraform {
   required_version = ">= 0.13"
 }
 
+# Настройка удаленного хранения стейта
+  backend "s3" {
+    endpoint = "storage.yandexcloud.net"
+    bucket   = "ИМЯ_ТВОЕГО_БАКЕТА" # Вставь сюда имя, которое придумал для бакета
+    region   = "ru-central1"
+    key      = "terraform.tfstate" # Имя файла, который создастся в бакете
+
+    # Эти параметры обязательны для совместимости Яндекса с S3-плагином
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    skip_requesting_account_id  = true # Важно для Яндекс Облака
+  }
+
 # 2. Настройки подключения (используем наш сервисный аккаунт)
 provider "yandex" {
   cloud_id                 = var.cloud_id
