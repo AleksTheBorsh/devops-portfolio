@@ -8,17 +8,22 @@ terraform {
   }
   required_version = ">= 0.13"
 
-# Настройка удаленного хранения стейта
   backend "s3" {
-    endpoint = "storage.yandexcloud.net"
-    bucket   = "devops-portfolio-tf-state-22" # Вставь сюда имя, которое придумал для бакета
+    # Обновленный синтаксис с указанием протокола https
+    endpoints = {
+      s3 = "https://storage.yandexcloud.net"
+    }
+    bucket   = "devops-portfolio-tf-state-22"
     region   = "ru-central1"
-    key      = "terraform.tfstate" # Имя файла, который создастся в бакете
+    key      = "terraform.tfstate"
 
-    # Эти параметры обязательны для совместимости Яндекса с S3-плагином
     skip_region_validation      = true
     skip_credentials_validation = true
-    skip_requesting_account_id  = true # Важно для Яндекс Облака
+    skip_requesting_account_id  = true
+    
+    # Добавляем этот параметр, так как новые версии Terraform 
+    # иногда требуют его для совместимости с Яндексом
+    skip_s3_checksum            = true 
   }
 }
 
