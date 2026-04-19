@@ -7,11 +7,11 @@ terraform {
     }
   }
   required_version = ">= 0.13"
-  
+
 # Настройка удаленного хранения стейта
   backend "s3" {
     endpoint = "storage.yandexcloud.net"
-    bucket   = "ИМЯ_ТВОЕГО_БАКЕТА" # Вставь сюда имя, которое придумал для бакета
+    bucket   = "devops-portfolio-tf-state-22" # Вставь сюда имя, которое придумал для бакета
     region   = "ru-central1"
     key      = "terraform.tfstate" # Имя файла, который создастся в бакете
 
