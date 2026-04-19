@@ -31,7 +31,9 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Create SA key
-        run: echo "${{ secrets.YC_SA_JSON_CREDENTIALS }}" > key.json
+        env:
+          SA_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+        run: echo "$SA_KEY" > key.json
 
       - name: Terraform Init
         run: terraform init
