@@ -29,7 +29,7 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-
+#Запихиваем наш key в переменную Git
       - name: Create SA key
         env:
           SA_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
