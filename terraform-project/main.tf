@@ -7,8 +7,7 @@ terraform {
     }
   }
   required_version = ">= 0.13"
-}
-
+  
 # Настройка удаленного хранения стейта
   backend "s3" {
     endpoint = "storage.yandexcloud.net"
@@ -21,6 +20,7 @@ terraform {
     skip_credentials_validation = true
     skip_requesting_account_id  = true # Важно для Яндекс Облака
   }
+}
 
 # 2. Настройки подключения (используем наш сервисный аккаунт)
 provider "yandex" {
