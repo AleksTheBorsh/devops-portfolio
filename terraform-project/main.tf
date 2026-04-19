@@ -18,6 +18,7 @@ provider "yandex" {
 # Объявляем, что такие переменные существуют
 variable "cloud_id" { type = string }
 variable "folder_id" { type = string }
+variable "ssh_public_key" { type = string }
 
 # 3. Создаем простую виртуальную сеть (VPC)
 resource "yandex_vpc_network" "my_first_network" {
@@ -66,7 +67,7 @@ resource "yandex_compute_instance" "vm-1" {
 
   metadata = {
     # Передаем публичный SSH-ключ, чтобы зайти на созданную машину
-    ssh-keys = "ubuntu:${file("~/.ssh/id_ed25519.pub")}"
+    ssh-keys = "ubuntu:${var.ssh_public_key}"
   }
 }
 
