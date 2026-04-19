@@ -20,7 +20,7 @@ jobs:
     env:
       YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
       YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
-      YC_SERVICE_ACCOUNT_KEY_FILE: ${{secrets.YC_SA_JSON_CREDENTIALS }}
+      YC_SERVICE_ACCOUNT_KEY_FILE: key.json # <-- Имя файла, без секретов!
       SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
 
     steps:
@@ -30,8 +30,11 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # Безопасная запись многострочного JSON через переменную окружения
       - name: Create SA key
-        run: echo "${{ secrets.YC_SA_JSON_CREDENTIALS }}" > key.json
+        env:
+          SA_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+        run: echo "$SA_KEY" > key.json
 
       - name: Terraform Init
         run: terraform init
