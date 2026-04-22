@@ -56,14 +56,6 @@ output "network_id" {
   value = yandex_vpc_network.my_first_network.id
 }
 
-
-# Добавим вывод публичного IP-адреса в консоль
-output "external_ip_address_vm_1" {
-  value = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
-}
-
-
-
 module "my_compute_instance" {
   source         = "./modules/compute" # Указываем путь к нашему модулю
   
