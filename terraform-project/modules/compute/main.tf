@@ -12,6 +12,7 @@ data "yandex_compute_image" "ubuntu_2204" {
 
 resource "yandex_compute_instance" "vm-1" {
   name        = "terraform-module-instance" # Изменили имя для наглядности
+  folder_id   = var.folder_id
   platform_id = "standard-v1"
   zone        = "ru-central1-a"
 
