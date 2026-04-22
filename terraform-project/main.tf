@@ -13,25 +13,25 @@ terraform {
     endpoints = {
       s3 = "https://storage.yandexcloud.net"
     }
-    bucket   = "devops-portfolio-tf-state-22"
-    region   = "ru-central1"
-    key      = "terraform.tfstate"
+    bucket = "devops-portfolio-tf-state-22"
+    region = "ru-central1"
+    key    = "terraform.tfstate"
 
     skip_region_validation      = true
     skip_credentials_validation = true
     skip_requesting_account_id  = true
-    
+
     # Добавляем этот параметр, так как новые версии Terraform 
     # иногда требуют его для совместимости с Яндексом
-    skip_s3_checksum            = true 
+    skip_s3_checksum = true
   }
 }
 
 # 2. Настройки подключения (используем наш сервисный аккаунт)
 provider "yandex" {
-  cloud_id                 = var.cloud_id
-  folder_id                = var.folder_id
-  zone                     = "ru-central1-a" # Зона доступности по умолчанию
+  cloud_id  = var.cloud_id
+  folder_id = var.folder_id
+  zone      = "ru-central1-a" # Зона доступности по умолчанию
 }
 # Объявляем, что такие переменные существуют
 variable "cloud_id" { type = string }
@@ -57,8 +57,8 @@ output "network_id" {
 }
 
 module "my_compute_instance" {
-  source         = "./modules/compute" # Указываем путь к нашему модулю
-  
+  source = "./modules/compute" # Указываем путь к нашему модулю
+
   # Передаем переменные внутрь модуля:
   instance_name  = "server-production"
   folder_id      = var.folder_id
@@ -67,17 +67,17 @@ module "my_compute_instance" {
 }
 
 module "my_second_server" {
-  source         = "./modules/compute" # Обращаемся к тому же самому чертежу
-  
-  instance_name  = "server-testing"    # Даем ДРУГОЕ имя
-  folder_id      = var.folder_id       # Каталог тот же
+  source = "./modules/compute" # Обращаемся к тому же самому чертежу
+
+  instance_name  = "server-testing"                     # Даем ДРУГОЕ имя
+  folder_id      = var.folder_id                        # Каталог тот же
   subnet_id      = yandex_vpc_subnet.my_first_subnet.id # Сеть та же
   ssh_public_key = var.ssh_public_key
 
-  
-#ждем когда поднимется первый сервер и затем поднимаем второй. 
-#Не обязательно если нет требования четкой последовательности
-  depends_on = [ module.my_compute_instance ] 
+
+  #ждем когда поднимется первый сервер и затем поднимаем второй. 
+  #Не обязательно если нет требования четкой последовательности
+  depends_on = [module.my_compute_instance]
 }
 
 # Обновляем корневой output, чтобы он брал IP из модуля
@@ -86,4 +86,10 @@ output "external_ip_address" {
 }
 output "second_server_ip" {
   value = module.my_second_server.instance_external_ip
+}
+resource "yandex_compute_disk" "imported_disk" {
+  name = "manual-disk"
+  type = "network-ssd"
+  size = 10
+  zone = "ru-central1-a"
 }
