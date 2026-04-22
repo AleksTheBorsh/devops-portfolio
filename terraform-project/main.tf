@@ -56,40 +56,24 @@ output "network_id" {
   value = yandex_vpc_network.my_first_network.id
 }
 
-# Запрашиваем у Яндекса ID самого свежего образа Ubuntu 22.04
-data "yandex_compute_image" "ubuntu_2204" {
-  family = "ubuntu-2204-lts"
-}
-
-# 6. Описываем саму виртуальную машину
-resource "yandex_compute_instance" "vm-1" {
-  name = "terraform-instance"
-
-  resources {
-    cores  = 2
-    memory = 2
-    core_fraction = 5 # Экономим: сервер будет использовать 5% мощности процессора
-  }
-
-  boot_disk {
-    initialize_params {
-      image_id = data.yandex_compute_image.ubuntu_2204.id #Образ 
-      size     = 10 # ГБ
-    }
-  }
-
-  network_interface {
-    subnet_id = yandex_vpc_subnet.my_first_subnet.id # Привязываем к нашей подсети
-    nat       = true # Включаем публичный IP, чтобы можно было зайти по SSH
-  }
-
-  metadata = {
-    # Передаем публичный SSH-ключ, чтобы зайти на созданную машину
-    ssh-keys = "ubuntu:${var.ssh_public_key}"
-  }
-}
 
 # Добавим вывод публичного IP-адреса в консоль
 output "external_ip_address_vm_1" {
   value = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
+}
+
+# ... (здесь остаются твои настройки terraform backend "s3", провайдер, сеть и подсеть) ...
+
+module "my_compute_instance" {
+  source         = "./modules/compute" # Указываем путь к нашему модулю
+  
+  # Передаем переменные внутрь модуля:
+  folder_id      = var.folder_id
+  subnet_id      = yandex_vpc_subnet.my_first_subnet.id # Берем ID свежесозданной подсети
+  ssh_public_key = var.ssh_public_key
+}
+
+# Обновляем корневой output, чтобы он брал IP из модуля
+output "external_ip_address" {
+  value = module.my_compute_instance.instance_external_ip
 }
