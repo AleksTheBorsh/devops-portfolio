@@ -73,6 +73,11 @@ module "my_second_server" {
   folder_id      = var.folder_id       # Каталог тот же
   subnet_id      = yandex_vpc_subnet.my_first_subnet.id # Сеть та же
   ssh_public_key = var.ssh_public_key
+
+  
+#ждем когда поднимется первый сервер и затем поднимаем второй. 
+#Не обязательно если нет требования четкой последовательности
+  depends_on = [ module.my_compute_instance ] 
 }
 
 # Обновляем корневой output, чтобы он брал IP из модуля
