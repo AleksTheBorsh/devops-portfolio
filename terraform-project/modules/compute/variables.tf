@@ -12,3 +12,7 @@ variable "ssh_public_key" {
   description = "Публичный SSH ключ"
   type        = string
 }
+variable "instance_name" {
+  description = "Имя виртуальной машины"
+  type        = string
+}
