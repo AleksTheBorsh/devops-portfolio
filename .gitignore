@@ -1,2 +1,14 @@
 terraform-project/.terraform/
 terraform-project/*.tfstate*
+ha# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Ignore any .tfvars files that are generated automatically
+*.tfvars
