@@ -1,0 +1,58 @@
+name: "HA Terraform CI/CD"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+     - 'ha-project/**' # <--- Реагируем только на изменения в новой папке
+     - '.github/workflows/ha-terraform.yml'
+
+jobs:
+  terraform:
+    name: "Deploy HA Infrastructure"
+    runs-on: ubuntu-latest
+    
+    # Говорим GitHub выполнять все команды внутри НОВОЙ папки проекта
+    defaults:
+      run:
+        working-directory: ./ha-project
+
+    env:
+      YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+      YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+      YC_SERVICE_ACCOUNT_KEY_FILE: key.json
+      SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+      # Ключи для S3 бакета (памяти)
+      AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }} 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Create SA key
+        env:
+          SA_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+        run: echo "$SA_KEY" > key.json
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+            -var="folder_id=${YC_FOLDER_ID}" \
+            -var="ssh_public_key=${SSH_PUBLIC_KEY}"
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve \
+            -var="folder_id=${YC_FOLDER_ID}" \
+            -var="ssh_public_key=${SSH_PUBLIC_KEY}"
