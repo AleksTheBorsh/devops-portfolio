@@ -85,6 +85,11 @@ resource "yandex_compute_instance_group" "web_group" {
   allocation_policy {
     zones = ["ru-central1-a", "ru-central1-b", "ru-central1-d"]
   }
+ # Собираем серверы в целевую группу для балансировщика
+  application_load_balancer {
+    target_group_name        = "ha-target-group"
+    target_group_description = "Целевая группа для ALB"
+  } 
 
   # Как обновлять серверы (чтобы не выключать все разом)
   deploy_policy {
