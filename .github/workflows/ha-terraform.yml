@@ -50,9 +50,9 @@ jobs:
           terraform plan \
             -var="folder_id=${YC_FOLDER_ID}" \
             -var="ssh_public_key=${SSH_PUBLIC_KEY}"
-
+#terraform apply -auto-approve \ временно убрали для сноса инфраструктуры.
       - name: Terraform Apply
         run: |
-          terraform apply -auto-approve \
+          terraform destroy -auto-approve \
             -var="folder_id=${YC_FOLDER_ID}" \
             -var="ssh_public_key=${SSH_PUBLIC_KEY}"
