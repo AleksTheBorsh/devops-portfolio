@@ -46,7 +46,7 @@ resource "yandex_compute_instance_group" "web_group" {
 
   # Тот самый "Launch Template" (какими будут наши серверы)
   instance_template {
-    platform_id = "standard-v1"
+    platform_id = "standard-v3"
     resources {
       memory = 2
       cores  = 2
