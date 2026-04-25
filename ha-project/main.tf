@@ -34,7 +34,7 @@ resource "yandex_iam_service_account" "ig_sa" {
 
 # 6. Даем ему роль "editor", чтобы он мог создавать серверы
 resource "yandex_resourcemanager_folder_iam_member" "ig_sa_editor" {
-  folder_id = var.folder_id 
+  folder_id = var.folder_id
   role      = "editor"
   member    = "serviceAccount:${yandex_iam_service_account.ig_sa.id}"
 }
