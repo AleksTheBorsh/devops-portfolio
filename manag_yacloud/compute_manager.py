@@ -9,7 +9,7 @@ from yandex.cloud.compute.v1.instance_service_pb2_grpc import InstanceServiceStu
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)-8s | %(message)s', datefmt='%H:%M:%S')
 
-FOLDER_ID = 'b1gi80mvh2p8j0611ckc' # Вставь свой ID каталога
+FOLDER_ID = 'folderid' # Вставь свой ID каталога
 
 def get_sdk():
     with open('authorized_key.json') as infile:
