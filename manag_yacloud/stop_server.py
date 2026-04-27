@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 # ID сервера, который мы будем выключать (твой тестовый сервер)
-INSTANCE_ID = 'fhmeu3759j9f8q1k5u57'
+INSTANCE_ID = 'serverID'
 
 def main():
     logging.info("Инициализация скрипта автоматизации...")
