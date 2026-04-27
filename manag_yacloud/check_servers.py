@@ -4,7 +4,7 @@ from yandex.cloud.compute.v1.instance_service_pb2 import ListInstancesRequest
 from yandex.cloud.compute.v1.instance_service_pb2_grpc import InstanceServiceStub
 
 # 1. Твой ID каталога в Яндекс Облаке (вставь свой)
-FOLDER_ID = 'b1gi80mvh2p8j0611ckc' 
+FOLDER_ID = 'FOLDERID' 
 
 # 2. Читаем "паспорт" робота из файла
 with open('authorized_key.json') as infile:
