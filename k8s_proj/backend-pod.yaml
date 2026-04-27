@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-server
+  namespace: skate-dev
+  labels:
+    app: skateboard-api
+    env: development
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:alpine
+    ports:
+    - containerPort: 80

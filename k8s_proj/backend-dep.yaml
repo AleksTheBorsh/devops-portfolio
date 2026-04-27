@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skate-backend-dep
+  namespace: skate-dev
+spec:
+  replicas: 3          # Мы хотим, чтобы всегда работало 3 копии!
+  selector:
+    matchLabels:
+      app: skateboard-api
+  template:            # Шаблон, по которому будут создаваться поды
+    metadata:
+      labels:
+        app: skateboard-api
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
