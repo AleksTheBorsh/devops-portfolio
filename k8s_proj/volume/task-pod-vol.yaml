@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-test-pod
+  namespace: skate-dev
+spec:
+# 1. Затаскиваем диск в Под (объявляем его существование)
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+  containers:
+    - name: task-pv-container
+      image: nginx:alpine
+# 2. Втыкаем этот диск прямо в контейнер
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html" # Nginx думает, что это его родная папка
+          name: task-pv-storage  # Ссылаемся на имя из шага 1
