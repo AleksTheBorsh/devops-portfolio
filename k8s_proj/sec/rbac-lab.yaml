@@ -1,0 +1,49 @@
+---
+# 1. Создаем "виртуального пользователя" (ServiceAccount)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: readonly-user
+  namespace: skate-dev
+
+---
+# 2. Создаем Роль (Role): список того, что МОЖНО делать
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: skate-dev
+rules:
+- apiGroups: [""]        # Core API (базовые объекты)
+  resources: ["pods"]    # К каким объектам даем доступ
+  verbs: ["get", "list"] # ЧТО именно разрешаем (только чтение!)
+
+---
+# 3. Связываем Аккаунт и Роль (RoleBinding)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-binding
+  namespace: skate-dev
+subjects:
+- kind: ServiceAccount
+  name: readonly-user    # Кого связываем
+  namespace: skate-dev
+roleRef:
+  kind: Role
+  name: pod-reader       # С какой ролью
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# 4. Запускаем тестовый Под под этим аккаунтом
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rbac-test-pod
+  namespace: skate-dev
+spec:
+  serviceAccountName: readonly-user # ВАЖНО: Подключаем нашего юзера к Поду
+  containers:
+  - name: alpine
+    image: alpine
+    command: ["sleep", "3600"]
