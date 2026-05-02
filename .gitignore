@@ -12,3 +12,4 @@ crash.log
 
 # Ignore any .tfvars files that are generated automatically
 *.tfvars
+terraform

@@ -17,9 +17,8 @@ resource "yandex_compute_instance" "vm-1" {
   zone        = "ru-central1-a"
 
   resources {
-    cores  = 2
-    memory = 2
-    core_fraction = 5
+    cores  = 4
+    memory = 8
   }
 
   boot_disk {
@@ -37,5 +36,6 @@ resource "yandex_compute_instance" "vm-1" {
 
   metadata = {
     ssh-keys = "ubuntu:${var.ssh_public_key}"
+    user-data = file("init-script.sh")  
   }
 }

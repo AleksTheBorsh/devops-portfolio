@@ -66,27 +66,11 @@ module "my_compute_instance" {
   ssh_public_key = var.ssh_public_key
 }
 
-module "my_second_server" {
-  source = "./modules/compute" # Обращаемся к тому же самому чертежу
-
-  instance_name  = "server-testing"                     # Даем ДРУГОЕ имя
-  folder_id      = var.folder_id                        # Каталог тот же
-  subnet_id      = yandex_vpc_subnet.my_first_subnet.id # Сеть та же
-  ssh_public_key = var.ssh_public_key
-
-
-  #ждем когда поднимется первый сервер и затем поднимаем второй. 
-  #Не обязательно если нет требования четкой последовательности
-  depends_on = [module.my_compute_instance]
-}
-
 # Обновляем корневой output, чтобы он брал IP из модуля
 output "external_ip_address" {
   value = module.my_compute_instance.instance_external_ip
 }
-output "second_server_ip" {
-  value = module.my_second_server.instance_external_ip
-}
+
 resource "yandex_compute_disk" "imported_disk" {
   name = "manual-disk"
   type = "network-ssd"
