@@ -7,10 +7,21 @@ on:
     paths:
      - 'terraform-project/**' 
      - '.github/workflows/terraform.yml'
+  # Добавляем ручной триггер (кнопку в интерфейсе GitHub Actions)
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose action: apply or destroy'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 
 jobs:
   terraform:
-    name: "Terraform Apply"
+    name: "Terraform Execution" # Переименовал, так как теперь тут не только Apply
     runs-on: ubuntu-latest
     
     # Говорим GitHub выполнять все команды внутри папки проекта
@@ -45,16 +56,29 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      # Plan запускается при обычном пуше ИЛИ при ручном выборе 'apply'
       - name: Terraform Plan
+        if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: |
           terraform plan \
             -var="cloud_id=${YC_CLOUD_ID}" \
             -var="folder_id=${YC_FOLDER_ID}" \
             -var="ssh_public_key=${SSH_PUBLIC_KEY}"
 
+      # Apply запускается при обычном пуше ИЛИ при ручном выборе 'apply'
       - name: Terraform Apply
+        if: github.event_name == 'push' || github.event.inputs.action == 'apply'
         run: |
           terraform apply -auto-approve \
+            -var="cloud_id=${YC_CLOUD_ID}" \
+            -var="folder_id=${YC_FOLDER_ID}" \
+            -var="ssh_public_key=${SSH_PUBLIC_KEY}"
+
+      # DESTROY запускается ТОЛЬКО если мы нажали кнопку руками и выбрали 'destroy'
+      - name: Terraform Destroy
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+        run: |
+          terraform destroy -auto-approve \
             -var="cloud_id=${YC_CLOUD_ID}" \
             -var="folder_id=${YC_FOLDER_ID}" \
             -var="ssh_public_key=${SSH_PUBLIC_KEY}"
