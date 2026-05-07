@@ -74,6 +74,6 @@ output "external_ip_address" {
 resource "yandex_compute_disk" "imported_disk" {
   name = "manual-disk"
   type = "network-ssd"
-  size = 10
+  size = 20
   zone = "ru-central1-a"
 }
